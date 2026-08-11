@@ -1,0 +1,32 @@
+# Node / React
+node_modules/
+dist/
+build/
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+.venv/
+env/
+.env
+
+# Data (Ignore raw and processed datasets)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Logs and DB
+*.log
+*.sql
+*.sqlite3
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
