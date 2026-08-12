@@ -7,6 +7,7 @@ CustomerPulse is a full-stack Customer Churn & Risk Analytics platform. It integ
 - **Backend API:** Python / Flask
 - **Machine Learning:** Scikit-Learn (Logistic Regression Pipeline)
 - **Data Engineering:** PySpark (Distributed Analytics Validation) & Pandas
+- **Statistical Analysis:** R (Hypothesis Testing & Validation)
 - **Frontend:** React + Vite + TypeScript
 - **Styling:** Vanilla CSS + Lucide Icons
 - **Charting:** Recharts
