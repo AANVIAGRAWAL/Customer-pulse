@@ -13,7 +13,8 @@ def generate_batch_predictions():
     print("--- Starting Batch Prediction Job ---")
     
     # 1. Load Model
-    model_path = '/Users/aanviagrawal/Customer pulse/analytics/ml/models/logistic_regression_churn_model.pkl'
+    backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    model_path = os.path.join(backend_dir, 'analytics', 'ml', 'models', 'logistic_regression_churn_model.pkl')
     try:
         pipeline = joblib.load(model_path)
         print("Model loaded successfully.")
@@ -22,7 +23,7 @@ def generate_batch_predictions():
         return
 
     # 2. Load Customer Data (from pipeline output to guarantee exact feature names)
-    data_path = '/Users/aanviagrawal/Customer pulse/data/processed/customer_data_processed.csv'
+    data_path = os.path.join(backend_dir, 'data', 'processed', 'customer_data_processed.csv')
     df = pd.read_csv(data_path)
     
     # Exclude leakage/target columns identical to training script

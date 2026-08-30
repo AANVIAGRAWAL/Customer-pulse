@@ -3,7 +3,9 @@ import joblib
 
 def test_saved_model():
     print("--- Verifying Saved ML Model ---")
-    model_path = '/Users/aanviagrawal/Customer pulse/analytics/ml/models/logistic_regression_churn_model.pkl'
+    import os
+    backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    model_path = os.path.join(backend_dir, 'analytics', 'ml', 'models', 'logistic_regression_churn_model.pkl')
     
     try:
         pipeline = joblib.load(model_path)

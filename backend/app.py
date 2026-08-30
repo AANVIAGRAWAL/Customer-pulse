@@ -3,8 +3,9 @@ import sys
 from flask import Flask
 from flask_cors import CORS
 
-# Ensure project root is in path so we can import database module
+# Ensure backend directory and project root are in path so we can resolve all import styles
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from backend.config import Config
 from backend.api.error_handlers import register_error_handlers
@@ -15,8 +16,9 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     
-    # Enable CORS for React frontend
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # Enable CORS for React frontend (e.g. Vercel deployment)
+    frontend_origin = os.environ.get('FRONTEND_URL', '*')
+    CORS(app, resources={r"/api/*": {"origins": frontend_origin}})
     
     # Register blueprints
     app.register_blueprint(api_bp, url_prefix='/api')

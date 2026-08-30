@@ -94,6 +94,7 @@ def process_customer_data(raw_path, processed_path):
     print(f"Saved processed dataset to: {processed_path}")
 
 if __name__ == "__main__":
-    raw = '/Users/aanviagrawal/Customer pulse/data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv'
-    processed = '/Users/aanviagrawal/Customer pulse/data/processed/customer_data_processed.csv'
+    backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    raw = os.path.join(backend_dir, 'data', 'raw', 'WA_Fn-UseC_-Telco-Customer-Churn.csv')
+    processed = os.path.join(backend_dir, 'data', 'processed', 'customer_data_processed.csv')
     process_customer_data(raw, processed)

@@ -8,7 +8,7 @@ class MLService:
 
     def load_model(self):
         model_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
             'analytics', 'ml', 'models', 'logistic_regression_churn_model.pkl'
         )
         try:

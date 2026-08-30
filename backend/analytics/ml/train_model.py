@@ -14,7 +14,8 @@ def train_churn_model():
     print("--- Starting ML Churn Prediction Pipeline ---")
     
     # 1. Load Dataset
-    data_path = '/Users/aanviagrawal/Customer pulse/data/processed/customer_data_processed.csv'
+    backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    data_path = os.path.join(backend_dir, 'data', 'processed', 'customer_data_processed.csv')
     df = pd.read_csv(data_path)
     
     # 2. Define Features and Target
@@ -120,7 +121,8 @@ def train_churn_model():
     print(coef_df[coef_df['Coefficient'] < 0].head(5)[['Feature', 'Coefficient']].to_string(index=False))
     
     # 9. Save Artifacts
-    output_dir = '/Users/aanviagrawal/Customer pulse/analytics/ml/models'
+    backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    output_dir = os.path.join(backend_dir, 'analytics', 'ml', 'models')
     os.makedirs(output_dir, exist_ok=True)
     
     model_path = os.path.join(output_dir, 'logistic_regression_churn_model.pkl')

@@ -3,8 +3,9 @@ import numpy as np
 import os
 
 # Paths
-raw_data_path = '/Users/aanviagrawal/Customer pulse/data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv'
-sample_data_dir = '/Users/aanviagrawal/Customer pulse/data/sample/'
+backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+raw_data_path = os.path.join(backend_dir, 'data', 'raw', 'WA_Fn-UseC_-Telco-Customer-Churn.csv')
+sample_data_dir = os.path.join(backend_dir, 'data', 'sample')
 sample_data_path = os.path.join(sample_data_dir, 'sample_dataset.csv')
 
 # Load

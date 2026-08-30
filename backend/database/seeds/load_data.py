@@ -52,5 +52,6 @@ def load_data(csv_path):
         print(str(e))
 
 if __name__ == "__main__":
-    csv_file = '/Users/aanviagrawal/Customer pulse/data/processed/customer_data_processed.csv'
+    backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    csv_file = os.path.join(backend_dir, 'data', 'processed', 'customer_data_processed.csv')
     load_data(csv_file)

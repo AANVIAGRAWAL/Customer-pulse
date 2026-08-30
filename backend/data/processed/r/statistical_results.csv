@@ -1,0 +1,7 @@
+Test,p_value,Significant
+Contract_ChiSq,7.32618218626441e-257,Yes
+InternetService_ChiSq,5.831198962236791e-159,Yes
+TechSupport_ChiSq,7.407807748843492e-180,Yes
+Tenure_TTest,2.3470747188955347e-234,Yes
+MonthlyCharges_TTest,2.65735714451575e-72,Yes
+TotalCharges_TTest,1.1524944112839042e-75,Yes
