@@ -62,3 +62,18 @@ CREATE TABLE IF NOT EXISTS fact_churn (
     INDEX idx_high_risk (HighRisk_Heuristic),
     FOREIGN KEY (customerID) REFERENCES dim_customers(customerID) ON DELETE CASCADE
 );
+
+-- 6. Users Registration Table
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 7. User OTP Verification Table
+CREATE TABLE IF NOT EXISTS user_otps (
+    email VARCHAR(255) PRIMARY KEY,
+    otp VARCHAR(100) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from backend.services.analytics_service import analytics_service
 from backend.services.customer_service import customer_service
 from backend.services.ml_service import ml_service
+from backend.api.auth import token_required
 
 api_bp = Blueprint('api', __name__)
 
@@ -10,6 +11,7 @@ def health_check():
     return jsonify({"status": "ok"})
 
 @api_bp.route('/dashboard', methods=['GET'])
+@token_required
 def get_dashboard():
     try:
         data = analytics_service.get_dashboard_kpis()
@@ -18,6 +20,7 @@ def get_dashboard():
         return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
 @api_bp.route('/customers', methods=['GET'])
+@token_required
 def get_customers():
     try:
         page = int(request.args.get('page', 1))
@@ -33,6 +36,7 @@ def get_customers():
         return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
 @api_bp.route('/customers/<customer_id>', methods=['GET'])
+@token_required
 def get_customer(customer_id):
     try:
         data = customer_service.get_customer_by_id(customer_id)
@@ -43,6 +47,7 @@ def get_customer(customer_id):
         return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
 @api_bp.route('/at-risk', methods=['GET'])
+@token_required
 def get_at_risk():
     try:
         page = int(request.args.get('page', 1))
@@ -55,6 +60,7 @@ def get_at_risk():
         return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
 @api_bp.route('/churn-analysis', methods=['GET'])
+@token_required
 def get_churn_analysis():
     try:
         data = analytics_service.get_churn_analysis()
@@ -63,6 +69,7 @@ def get_churn_analysis():
         return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
 @api_bp.route('/segments', methods=['GET'])
+@token_required
 def get_segments():
     try:
         data = analytics_service.get_segments()
@@ -71,6 +78,7 @@ def get_segments():
         return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
 @api_bp.route('/insights', methods=['GET'])
+@token_required
 def get_insights():
     try:
         data = analytics_service.get_insights()
@@ -79,6 +87,7 @@ def get_insights():
         return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
 @api_bp.route('/predict', methods=['POST'])
+@token_required
 def predict_churn():
     try:
         data = request.get_json()
@@ -103,6 +112,7 @@ def predict_churn():
         return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
 @api_bp.route('/upload', methods=['POST'])
+@token_required
 def upload_csv():
     # Only validates file structure, does not mutate DB
     if 'file' not in request.files:

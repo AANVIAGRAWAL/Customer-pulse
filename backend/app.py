@@ -10,6 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from backend.config import Config
 from backend.api.error_handlers import register_error_handlers
 from backend.api.routes import api_bp
+from backend.api.auth import auth_bp
 from backend.services.ml_service import ml_service
 
 def create_app(config_class=Config):
@@ -22,6 +23,7 @@ def create_app(config_class=Config):
     
     # Register blueprints
     app.register_blueprint(api_bp, url_prefix='/api')
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
     
     # Register error handlers
     register_error_handlers(app)

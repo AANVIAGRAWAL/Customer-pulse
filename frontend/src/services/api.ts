@@ -9,6 +9,20 @@ const apiClient = axios.create({
   },
 });
 
+// Add a request interceptor to attach JWT token
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export interface DashboardKPIs {
   average_monthly_charges: number;
   churn_rate: number;
@@ -185,4 +199,22 @@ export const uploadDataset = async (file: File): Promise<UploadResponse> => {
     }
     throw error;
   }
+};
+
+export interface AuthResponse {
+  status: string;
+  message: string;
+  token?: string;
+  mock_mode?: boolean;
+  user?: { email: string };
+}
+
+export const sendOtp = async (email: string): Promise<AuthResponse> => {
+  const response = await apiClient.post('/auth/send-otp', { email });
+  return response.data;
+};
+
+export const verifyOtp = async (email: string, otp: string): Promise<AuthResponse> => {
+  const response = await apiClient.post('/auth/verify-otp', { email, otp });
+  return response.data;
 };
