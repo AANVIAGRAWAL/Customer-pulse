@@ -1,12 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { UploadCloud, CheckCircle2, AlertCircle, FileText, X, ShieldAlert, ArrowRight, Activity } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { uploadDataset } from '../services/api';
 import type { UploadResponse } from '../services/api';
 
 const UploadPage: React.FC = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { onUploadSuccess } = useOutletContext<{ onUploadSuccess: () => void }>();
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -72,11 +73,14 @@ const UploadPage: React.FC = () => {
     try {
       const response = await uploadDataset(selectedFile);
       setResult(response);
+      if (response.status === 'success') {
+        onUploadSuccess(); // Unlock dashboard pages!
+      }
     } catch (err) {
       console.error('Validation request failed', err);
       setResult({
-        error: 'Validation Failed',
-        message: 'Unable to communicate with the validation server. Please try again later.'
+        error: 'Upload Failed',
+        message: 'Unable to communicate with the server. Please check the network and try again.'
       });
     } finally {
       setIsValidating(false);
@@ -95,18 +99,18 @@ const UploadPage: React.FC = () => {
     <div className="page-container" style={{ maxWidth: '800px', margin: '0 auto' }}>
       <div className="header-flex" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '2rem' }}>
         <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <UploadCloud size={28} className="text-primary" /> Data Upload & Validation
+          <UploadCloud size={28} className="text-primary" /> Data Upload & Analysis
         </h1>
         <p className="text-muted" style={{ fontSize: '1.1rem', margin: 0 }}>
-          Validate a CustomerPulse-compatible CSV payload without mutating production.
+          Upload and analyze any customer CSV dataset to populate your session dashboard.
         </p>
       </div>
 
       {/* Safety Notice */}
-      <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '1rem', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
-        <ShieldAlert size={20} className="text-danger" />
+      <div style={{ backgroundColor: 'rgba(99, 102, 241, 0.05)', border: '1px solid rgba(99, 102, 241, 0.2)', padding: '1rem', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
+        <ShieldAlert size={20} className="text-primary" />
         <p style={{ margin: 0, color: 'var(--text-primary)', fontSize: '0.95rem' }}>
-          <strong>Validation Only:</strong> This upload mechanism performs authoritative schema validation only. The production MySQL database and ML pipelines will <strong>not</strong> be modified.
+          <strong>Private Database:</strong> Your uploaded file will be loaded into a private SQLite database associated with your session. The main dashboard analytics and predictions will dynamically recalculate for this file.
         </p>
       </div>
 
@@ -166,7 +170,7 @@ const UploadPage: React.FC = () => {
           
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
             <button className="btn-secondary" onClick={clearSelection}>Cancel</button>
-            <button className="btn-primary" onClick={handleValidate}>Validate CSV</button>
+            <button className="btn-primary" onClick={handleValidate}>Upload & Analyze CSV</button>
           </div>
         </div>
       )}
@@ -175,8 +179,8 @@ const UploadPage: React.FC = () => {
       {isValidating && (
         <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
           <Activity size={48} className="spinner text-primary" style={{ margin: '0 auto 1rem auto' }} />
-          <h3>Validating CSV...</h3>
-          <p className="text-muted">Analyzing file schema and row count against CustomerPulse requirements.</p>
+          <h3>Processing & Generating Predictions...</h3>
+          <p className="text-muted">Parsing columns, calculating analytics features, and executing the scikit-learn Churn Risk pipeline.</p>
         </div>
       )}
 
@@ -189,7 +193,7 @@ const UploadPage: React.FC = () => {
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
                 <CheckCircle2 size={32} className="text-success" />
-                <h2 style={{ margin: 0 }}>Validation Successful</h2>
+                <h2 style={{ margin: 0 }}>Analysis Successful</h2>
               </div>
               
               <div style={{ padding: '1.5rem', backgroundColor: 'var(--bg-color)', borderRadius: '8px', marginBottom: '1.5rem' }}>
@@ -198,12 +202,12 @@ const UploadPage: React.FC = () => {
                   <span className="fw-500">{selectedFile?.name}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', marginBottom: '0.75rem' }}>
-                  <span className="text-muted">Valid Rows Found:</span>
+                  <span className="text-muted">Total Customers Loaded:</span>
                   <span className="fw-500">{result.row_count?.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', marginBottom: '0.75rem' }}>
-                  <span className="text-muted">Schema Validation:</span>
-                  <span className="fw-500 text-success">✓ Passed</span>
+                  <span className="text-muted">ML Predictions Status:</span>
+                  <span className="fw-500 text-success">✓ Completed</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span className="text-muted">Status:</span>
@@ -223,7 +227,7 @@ const UploadPage: React.FC = () => {
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
                 <AlertCircle size={32} className="text-danger" />
-                <h2 style={{ margin: 0 }}>{result.error || 'Validation Failed'}</h2>
+                <h2 style={{ margin: 0 }}>{result.error || 'Upload Failed'}</h2>
               </div>
               
               <div style={{ padding: '1.5rem', backgroundColor: 'rgba(239, 68, 68, 0.05)', borderRadius: '8px', marginBottom: '1.5rem' }}>

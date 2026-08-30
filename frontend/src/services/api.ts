@@ -209,12 +209,7 @@ export interface AuthResponse {
   user?: { email: string };
 }
 
-export const sendOtp = async (email: string): Promise<AuthResponse> => {
-  const response = await apiClient.post('/auth/send-otp', { email });
-  return response.data;
-};
-
-export const verifyOtp = async (email: string, otp: string): Promise<AuthResponse> => {
-  const response = await apiClient.post('/auth/verify-otp', { email, otp });
+export const getSessionStatus = async (): Promise<{ status: string; has_data: boolean }> => {
+  const response = await apiClient.get('/auth/session-status');
   return response.data;
 };

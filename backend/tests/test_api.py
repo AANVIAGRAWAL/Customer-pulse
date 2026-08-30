@@ -1,7 +1,6 @@
 import os
 import sys
 import pytest
-import io
 import jwt
 import datetime
 
@@ -17,15 +16,36 @@ def client():
 
 @pytest.fixture
 def auth_headers(client):
-    # Retrieve the secret key used by the application
     app = create_app()
     secret_key = app.config['SECRET_KEY']
     payload = {
         "email": "test@example.com",
-        "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+        "exp": datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=1)
     }
     token = jwt.encode(payload, secret_key, algorithm="HS256")
     return {"Authorization": f"Bearer {token}"}
+
+@pytest.fixture(autouse=True)
+def seed_session_db(client, auth_headers):
+    """
+    Autouse fixture that uploads the raw customer CSV to populate the 
+    user-specific SQLite database before each test runs.
+    """
+    backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    csv_file = os.path.join(backend_dir, 'backend', 'data', 'raw', 'WA_Fn-UseC_-Telco-Customer-Churn.csv')
+    
+    with open(csv_file, 'rb') as f:
+        data = {
+            'file': (f, 'test_dataset.csv')
+        }
+        # Post file upload to populate the SQLite database for test@example.com
+        upload_res = client.post(
+            '/api/upload', 
+            data=data, 
+            headers=auth_headers, 
+            content_type='multipart/form-data'
+        )
+        assert upload_res.status_code == 200
 
 def test_health_check(client):
     response = client.get('/api/health')
@@ -99,6 +119,7 @@ def test_predict_invalid(client, auth_headers):
     assert response.status_code == 422
     
 def test_upload_invalid(client, auth_headers):
+    # Testing without file in multipart
     response = client.post('/api/upload', headers=auth_headers)
     assert response.status_code == 422 # No file part
 

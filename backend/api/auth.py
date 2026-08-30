@@ -4,7 +4,7 @@ import datetime
 import urllib.request
 import json
 import jwt
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, g
 from sqlalchemy import text
 from functools import wraps
 
@@ -54,6 +54,7 @@ def token_required(f):
         try:
             data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=["HS256"])
             request.user_email = data['email']
+            g.user_email = data['email']
             return f(*args, **kwargs)
         except (jwt.ExpiredSignatureError, jwt.InvalidSignatureError, jwt.InvalidTokenError):
             # Not a local mock token, continue to Firebase validation
@@ -85,6 +86,7 @@ def token_required(f):
                 issuer=f"https://securetoken.google.com/{firebase_project_id}"
             )
             request.user_email = decoded_token.get('email')
+            g.user_email = decoded_token.get('email')
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Unauthorized", "message": "Authentication token has expired."}), 401
         except Exception as e:
@@ -133,4 +135,17 @@ def mock_login():
         "message": "Local developer login successful.",
         "token": token,
         "user": {"email": email}
+    })
+
+@auth_bp.route('/session-status', methods=['GET'])
+@token_required
+def session_status():
+    """
+    Returns whether the current user has uploaded data in their SQLite session.
+    """
+    from backend.services.db_service import user_has_data
+    has_data = user_has_data(g.user_email)
+    return jsonify({
+        "status": "success",
+        "has_data": has_data
     })

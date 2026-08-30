@@ -38,13 +38,13 @@ const LoginPage: React.FC = () => {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify({ email: userCredential.user.email }));
         setMessage("Account created successfully!");
-        setTimeout(() => navigate('/dashboard'), 1000);
+        setTimeout(() => navigate('/upload'), 1000);
       } else {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const token = await userCredential.user.getIdToken();
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify({ email: userCredential.user.email }));
-        navigate('/dashboard');
+        navigate('/upload');
       }
     } catch (err: any) {
       console.error(err);
@@ -72,7 +72,7 @@ const LoginPage: React.FC = () => {
       const token = await result.user.getIdToken();
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify({ email: result.user.email }));
-      navigate('/dashboard');
+      navigate('/upload');
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Google Sign-In failed.");
@@ -95,7 +95,7 @@ const LoginPage: React.FC = () => {
       if (response.data.status === 'success') {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
-        navigate('/dashboard');
+        navigate('/upload');
       } else {
         setError("Mock login failed.");
       }

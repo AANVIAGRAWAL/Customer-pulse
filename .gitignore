@@ -18,6 +18,7 @@ env/
 # Data (Ignore raw and processed datasets)
 data/raw/*
 data/processed/*
+backend/data/sessions/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 

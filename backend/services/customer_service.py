@@ -165,7 +165,7 @@ class CustomerService:
                     "gender": row[3],
                     "tenure": int(row[4]),
                     "MonthlyCharges": float(row[5]),
-                    "prediction_timestamp": row[6].isoformat() if row[6] else None
+                    "prediction_timestamp": row[6].isoformat() if hasattr(row[6], 'isoformat') else (row[6] if row[6] else None)
                 } for row in rows
             ]
             
