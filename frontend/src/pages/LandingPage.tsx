@@ -19,7 +19,7 @@ const LandingPage: React.FC = () => {
       <nav className="landing-nav">
         <div className="landing-logo">CustomerPulse</div>
         <div className="landing-nav-links">
-          <Link to="/dashboard" className="nav-btn primary">Dashboard</Link>
+          <Link to="/login" className="nav-btn primary">Start Analysing</Link>
         </div>
       </nav>
 
@@ -31,12 +31,9 @@ const LandingPage: React.FC = () => {
             Analyze customer behavior, identify churn risks, understand churn drivers and prioritize retention opportunities.
           </p>
           <div className="hero-actions">
-            <Link to="/dashboard" className="btn btn-primary">
-              Explore Dashboard
+            <Link to="/login" className="btn btn-primary">
+              Start Analysing
               <ArrowRight size={18} />
-            </Link>
-            <Link to="/upload" className="btn btn-secondary">
-              Analyze Customer Data
             </Link>
           </div>
         </div>
@@ -126,8 +123,8 @@ const LandingPage: React.FC = () => {
       <section className="cta">
         <h2>Ready to reduce customer churn?</h2>
         <p>Start analyzing your data today to build effective retention strategies.</p>
-        <Link to="/upload" className="btn btn-primary large">
-          Upload Dataset Now
+        <Link to="/login" className="btn btn-primary large">
+          Start Analysing
         </Link>
       </section>
       
